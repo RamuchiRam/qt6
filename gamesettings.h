@@ -20,7 +20,7 @@ public:
 public slots:
     void start_pressed();
     void field_closed();
-    void updateScore();
+    void updateScore(QString);
     void status_changed(QString);
 
 private:

@@ -1,6 +1,9 @@
 #include "gamefield.h"
 #include <QGridLayout>
 #include <QMessageBox>
+#include <QTextStream>
+#include <QDebug>
+#include <QString>
 
 GameField::GameField(int n, int m, QWidget *parent) :
     QWidget(parent), m_model(n, m)
@@ -37,7 +40,6 @@ void GameField::changePlayer() {
 
 void GameField::button_pressed() {
     QPushButton* sender_obj = qobject_cast<QPushButton*>(sender());
-
     int i = 0, j = 0;
 
     for (i = 0; i < m_n; ++i) {
@@ -85,12 +87,50 @@ void GameField::show_model() {
         emit status("ход Х");
     }
     else if (m_model.player == Zero) {
-         emit status("ход O");
+        emit status("ход O");
     }
     else {
          emit status("игра не начата");
     }
-
-
 }
 
+void GameField::writeSaveFile(QString name){
+    QFile file("D:\\stats.txt");
+    file.open(QIODevice::ReadWrite | QIODevice::Text);
+    QTextStream stream(&file);
+    QList< QStringList > lists;
+    QString line;
+    bool nameIsFounded = false;
+    unsigned char nameIndex = 0;
+    do {
+        line = stream.readLine();
+        lists << line.split("\t");
+        qDebug()<<lists;
+    } while (!line.isNull());
+
+    for (int i = 0;i<lists.length();i++) {
+
+        if(lists[i][0]==name){
+         nameIsFounded = true;
+         nameIndex = i;
+         break;
+        }
+    }
+
+    if(nameIsFounded){
+        int score = lists[nameIndex][1].toInt();
+        score+=1;
+        lists[nameIndex][1]=QString::number(score);
+        qDebug()<<lists;
+    }
+    else{
+        stream << name << "\t" << "1" << "\n";
+    }
+
+    file.resize(0);
+    for(int i = 0; i<lists.length()-1;i++)
+    {
+        stream << lists[i][0] << "\t" << lists[i][1] << "\n";
+    }
+    file.close();
+}

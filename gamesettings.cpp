@@ -20,6 +20,7 @@
 #include "gamefield.h"
 #include <QTextStream>
 #include <QFile>
+#include <QDebug>
 
 GameSettings::GameSettings(QWidget *parent) :
     QWidget(parent),
@@ -58,6 +59,7 @@ void GameSettings::start_pressed() {
 }
 
 void GameSettings::field_closed() {
+    readSaveFile();
     m_field = nullptr;
     this->setVisible(true);
     ui->start->setEnabled(true);
@@ -65,10 +67,27 @@ void GameSettings::field_closed() {
 
 void GameSettings::status_changed(QString status) {
     ui->game_status->setText(status);
+    if(!m_field)
+        updateScore(status);
+}
+
+void GameSettings::updateScore(QString status) {
+    if(status=="выиграл X"){
+        int winCross = ui->tableWidget->takeItem(0,0)->text().toInt();
+        winCross++;
+        ui->tableWidget->setItem(0,0, new QTableWidgetItem(winCross));
+        ui->tableWidget->setItem(1,1, new QTableWidgetItem(winCross));
+    }
+    else if (status == "выиграл O"){
+        int winZero = ui->tableWidget->takeItem(1,0)->text().toInt();
+        winZero++;
+        ui->tableWidget->setItem(0,1, new QTableWidgetItem(winZero));
+        ui->tableWidget->setItem(1, 0, new QTableWidgetItem(winZero));
+    }
 }
 
 void GameSettings::readSaveFile(){
-    QFile infile("C:\\Users\\gd200\\Desktop\\GithubRepos\\qt6\\stats.txt");
+    QFile infile("D:\\stats.txt");
     infile.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in(&infile);
     QList< QStringList > lists;
@@ -78,37 +97,28 @@ void GameSettings::readSaveFile(){
         lists << line.split("\t");
     } while (!line.isNull());
 
-    ui->tableWidget->setRowCount(2);
-    ui->tableWidget->setColumnCount(2);
-    ui->tableWidget->setVerticalHeaderLabels(lists[0]);
+    ui->tableWidget->setRowCount(lists.length()-1);
+    ui->tableWidget->setColumnCount(1);
+    //ui->tableWidget->setVerticalHeaderLabels(lists[0]);
+    QList<QString> names;
+    for (int i = 0; i <= lists[0].length(); i++)
+    {
+        names.insert(names.size(), lists[i][0]);
+    }
+    ui->tableWidget->setVerticalHeaderLabels(names);
     ui->tableWidget->setHorizontalHeaderLabels({"Победа", "Поражение"});
 
-    for ( int row = 0; row < 2; ++row ) {
-        for ( int column = 0; column < lists[row].size(); ++column ) {
-            ui->tableWidget->setItem(row, column, new QTableWidgetItem(lists[row+1][column]));
-        }
+    for ( int row = 0; row < lists.length()-1; ++row ) {
+            ui->tableWidget->setItem(row, 0, new QTableWidgetItem(lists[row][1]));
     }
     infile.close();
 }
 
-void GameSettings::updateScore() {
-    int winCross = ui->tableWidget->takeItem(0,0)->text().toInt();
-    int winZero = ui->tableWidget->takeItem(1,0)->text().toInt();
-
-}
-
 void GameSettings::writeSaveFile(){
-    QFile outfile("C:\\Users\\gd200\\Desktop\\GithubRepos\\qt6\\stats.txt");
+    QFile outfile("D:\\statistics.txt");
     outfile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
     outfile.resize(0);
     QTextStream out(&outfile);
-    out << ui->tableWidget->takeVerticalHeaderItem(0)->text() << '\t'
-        << ui->tableWidget->takeVerticalHeaderItem(1)->text() << '\n';
-    for ( int row = 0; row < 2; ++row ) {
-        for ( int column = 0; column < 2; ++column ) {
-            out << ui->tableWidget->takeItem(row, column)->text() << '\t';
-        }
-        out << '\n';
-    }
+
     outfile.close();
 }
