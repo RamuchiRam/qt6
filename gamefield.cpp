@@ -4,6 +4,8 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QString>
+#include <QInputDialog>
+#include <QDir>
 
 GameField::GameField(int n, int m, QWidget *parent) :
     QWidget(parent), m_model(n, m)
@@ -57,10 +59,12 @@ void GameField::button_pressed() {
     if (m_model.checkHLines(Cross) || m_model.checkVLines(Cross) || m_model.checkLDiagonals(Cross) || m_model.checkRDiagonals(Cross)) {
         emit status("выиграл X");
         set_active(false);
+        winDialog();
     }
     if (m_model.checkHLines(Zero) || m_model.checkVLines(Zero) || m_model.checkLDiagonals(Zero) || m_model.checkRDiagonals(Zero)) {
         emit status("выиграл O");
         set_active(false);
+        winDialog();
     }
 }
 
@@ -133,4 +137,17 @@ void GameField::writeSaveFile(QString name){
         stream << lists[i][0] << "\t" << lists[i][1] << "\n";
     }
     file.close();
+}
+
+void GameField::winDialog(){
+    bool ok;
+    QString text = QInputDialog::getText(this,
+                                 QString::fromUtf8("Введите текст"),
+                                 QString::fromUtf8("Ваш текст:"),
+                                 QLineEdit::Normal,
+                                 QDir::home().dirName(), &ok);
+    if (ok && !text.isEmpty()){
+        writeSaveFile(text);
+    }
+    this->close();
 }

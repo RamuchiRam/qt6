@@ -2,16 +2,13 @@
 // 1) вместо Setting сделать меню с кнопками "играть" и "статистика" ++сделано
 // 2) статистика считывается с файла ++окей, файлик прочитали, осталось научиться туда записывать
 /*  --Cтруктура файла с сохранением--
-Имя_игрока\tИмя_игрока          |Cross	Zero
-Число_побед\tЧисло_поражений    |4  5
-Число_побед\tЧисло_поражений    |5	4
+Имя_игрока\tЧисло побед\n
 
 */
-// 3) после победы запрашивать имя победителя и увеличивать счетчик в статистике --TO DO
+// 3) после победы запрашивать имя победителя и увеличивать счетчик в статистике ++есть
 // 4) после нажатия "играть" открывается поле 10 на 10 ++сделано
 // 5) после окончания игры открывается окно меню ++я надеюсь это так работает, так что сделано
-// 6) игра 5 в ряд -- неправильно считается количество Х/О на поле, по горизонтали в первом может засчитать два в ряд как победу
-// по вертикали считается только 6 в ряд
+// 6) игра 5 в ряд -- не работает проверка на не главных диагоналях
 // 7) попробовать написать хороший код --чо
 
 #include "gamesettings.h"
@@ -88,32 +85,40 @@ void GameSettings::updateScore(QString status) {
 
 void GameSettings::readSaveFile(){
     QFile infile("D:\\stats.txt");
-    infile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream in(&infile);
-    QList< QStringList > lists;
-    QString line;
-    do {
-        line = in.readLine();
-        lists << line.split("\t");
-    } while (!line.isNull());
 
-    ui->tableWidget->setRowCount(lists.length()-1);
-    ui->tableWidget->setColumnCount(1);
-    //ui->tableWidget->setVerticalHeaderLabels(lists[0]);
-    QList<QString> names;
-    for (int i = 0; i <= lists[0].length(); i++)
-    {
-        names.insert(names.size(), lists[i][0]);
+    if(!(infile.exists())){
+        infile.open(QIODevice::ReadWrite | QIODevice::Text);
+        infile.write("\n");
+        infile.close();
+        return;
     }
-    ui->tableWidget->setVerticalHeaderLabels(names);
-    ui->tableWidget->setHorizontalHeaderLabels({"Победа", "Поражение"});
+    else{
+        infile.open(QIODevice::ReadWrite | QIODevice::Text);
+        QTextStream in(&infile);
+        QList< QStringList > lists;
+        QString line;
+        do {
+            line = in.readLine();
+            lists << line.split("\t");
+        } while (!line.isNull());
 
-    for ( int row = 0; row < lists.length()-1; ++row ) {
+        ui->tableWidget->setRowCount(lists.length()-1);
+        ui->tableWidget->setColumnCount(1);
+        //ui->tableWidget->setVerticalHeaderLabels(lists[0]);
+        QList<QString> names;
+        for (int i = 0; i <= lists[0].length(); i++)
+        {
+            names.insert(names.size(), lists[i][0]);
+        }
+        ui->tableWidget->setVerticalHeaderLabels(names);
+        ui->tableWidget->setHorizontalHeaderLabels({"Победа", "Поражение"});
+
+        for ( int row = 0; row < lists.length()-1; ++row ) {
             ui->tableWidget->setItem(row, 0, new QTableWidgetItem(lists[row][1]));
+        }
+        infile.close();
     }
-    infile.close();
 }
-
 void GameSettings::writeSaveFile(){
     QFile outfile("D:\\statistics.txt");
     outfile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);

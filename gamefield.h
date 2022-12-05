@@ -30,6 +30,7 @@ public slots:
 private:
     vector<vector<QPushButton*>> m_field;
     void writeSaveFile(QString);
+    void winDialog();
     GameModel m_model;
     int m_n, m_m;
 };
