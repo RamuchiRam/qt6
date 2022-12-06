@@ -119,11 +119,11 @@ void GameSettings::readSaveFile(){
         infile.close();
     }
 }
-void GameSettings::writeSaveFile(){
-    QFile outfile("D:\\statistics.txt");
-    outfile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
-    outfile.resize(0);
-    QTextStream out(&outfile);
+//void GameSettings::writeSaveFile(){
+//    QFile outfile("D:\\statistics.txt");
+//    outfile.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Text);
+//    outfile.resize(0);
+//    QTextStream out(&outfile);
 
-    outfile.close();
-}
+//    outfile.close();
+//}
