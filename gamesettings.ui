@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>358</width>
-    <height>266</height>
+    <width>302</width>
+    <height>280</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>5 В Ряд</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">

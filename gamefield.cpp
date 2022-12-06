@@ -109,9 +109,7 @@ void GameField::writeSaveFile(QString name){
     do {
         line = stream.readLine();
         lists << line.split("\t");
-        qDebug()<<lists;
     } while (!line.isNull());
-
     for (int i = 0;i<lists.length();i++) {
 
         if(lists[i][0]==name){
@@ -125,7 +123,6 @@ void GameField::writeSaveFile(QString name){
         int score = lists[nameIndex][1].toInt();
         score+=1;
         lists[nameIndex][1]=QString::number(score);
-        qDebug()<<lists;
     }
     else{
         stream << name << "\t" << "1" << "\n";

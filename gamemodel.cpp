@@ -53,21 +53,39 @@ bool GameModel::checkHLines(ItemType type){
 }
 
 bool GameModel::checkLDiagonals(ItemType type){
-    int count;
-
-    for (int i = 0; i < 10; ++i){
-        (model[10-i-1][i] == type) ? count += 1 : count = 0;
-        if ((count>=5))  return true;
+    int count = 0;
+    for (int offsetY = 0; offsetY < 10; ++offsetY){
+        for (int i = 0; i < 10-offsetY; ++i){
+            (model[10-i-1-offsetY][i] == type) ? count += 1 : count = 0;
+            if ((count>=5)) return true;
+        }
+    }
+    count = 0;
+    for (int offsetY = 0; offsetY < 10; ++offsetY){
+        for (int i = 0; i < 10-offsetY; ++i){
+            (model[10-i-1][i+offsetY] == type) ? count += 1 : count = 0;
+            if ((count>=5)) return true;
+        }
     }
     return false;
 }
 
 bool GameModel::checkRDiagonals(ItemType type){
-    int count;
+    int count = 0;
 
-    for (int i = 0; i < 10; ++i){
-        (model[i][i] == type) ? count += 1 : count = 0;
-        if ((count>=5))  return true;
+    for (int offsetY = 0; offsetY < 10; ++offsetY){
+    for (int i = 0; i < 10-offsetY; ++i){
+        (model[i+offsetY][i] == type) ? count += 1 : count = 0;
+        if ((count>=5)) return true;
+    }
+    }
+    count = 0;
+
+    for (int offsetY = 0; offsetY < 10; ++offsetY){
+        for (int i = 0; i < 10-offsetY; ++i){
+            (model[i][i+offsetY] == type) ? count += 1 : count = 0;
+            if ((count>=5)) return true;
+        }
     }
     return false;
 }

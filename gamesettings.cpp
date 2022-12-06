@@ -106,9 +106,11 @@ void GameSettings::readSaveFile(){
         ui->tableWidget->setColumnCount(1);
         //ui->tableWidget->setVerticalHeaderLabels(lists[0]);
         QList<QString> names;
-        for (int i = 0; i <= lists[0].length(); i++)
+        for (int i = 0; i < lists.length(); i++)
         {
             names.insert(names.size(), lists[i][0]);
+            qDebug()<<names;
+            qDebug()<<lists[0];
         }
         ui->tableWidget->setVerticalHeaderLabels(names);
         ui->tableWidget->setHorizontalHeaderLabels({"Победа", "Поражение"});
