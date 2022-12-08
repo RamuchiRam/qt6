@@ -24,6 +24,7 @@ struct GameModel {
     bool checkVLines(ItemType type);
     bool checkRDiagonals(ItemType type);
     bool checkLDiagonals(ItemType type);
+    bool checkEven();
 };
 
 #endif // GAMEMODEL_H

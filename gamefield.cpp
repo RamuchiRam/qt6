@@ -56,15 +56,23 @@ void GameField::button_pressed() {
     m_model.step(i, j);
     show_model();
 
-    if (m_model.checkHLines(Cross) || m_model.checkVLines(Cross) || m_model.checkLDiagonals(Cross) || m_model.checkRDiagonals(Cross)) {
+    if (m_model.checkHLines(Cross) || m_model.checkVLines(Cross)) {
         emit status("выиграл X");
         set_active(false);
         winDialog();
     }
-    if (m_model.checkHLines(Zero) || m_model.checkVLines(Zero) || m_model.checkLDiagonals(Zero) || m_model.checkRDiagonals(Zero)) {
+    if (m_model.checkHLines(Zero) || m_model.checkVLines(Zero)) {
         emit status("выиграл O");
         set_active(false);
         winDialog();
+    }
+    if (m_model.checkEven()) {
+        emit status("Победила дружба");
+        set_active(false);
+        QMessageBox evenBox;
+        evenBox.setText("Ничья");
+        evenBox.exec();
+        this->close();
     }
 }
 

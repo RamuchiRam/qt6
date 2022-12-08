@@ -90,6 +90,17 @@ bool GameModel::checkRDiagonals(ItemType type){
     return false;
 }
 
+bool GameModel::checkEven() {
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            if (model[i][j] == Empty) {
+               return false;
+            }
+        }
+    }
+    return true;
+}
+
 void GameModel::change_player() {
     if (player == Cross) {
         player = Zero;
